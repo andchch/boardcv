@@ -17,9 +17,3 @@ services:
     volumes:
       - './imgs:/app/imgs'
       - './db:/app/db'
-
-volumes:
-  config:
-    driver: local
-  images:
-    driver: local

@@ -78,7 +78,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def user_update(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    db_delete_user(update)
+    db_add_user(update)
     await context.bot.send_message(chat_id=update.effective_chat.id,
                                    text='Ваша запись обновлена.')
 

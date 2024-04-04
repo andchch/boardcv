@@ -1,7 +1,11 @@
 import os
 import sqlite3
 import telegram
+from dotenv import load_dotenv
 from telegram.error import BadRequest
+
+dotenv_path = 'cfg/.env'
+load_dotenv(dotenv_path)
 
 
 def db_init():

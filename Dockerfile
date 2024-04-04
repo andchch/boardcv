@@ -19,6 +19,10 @@ EXPOSE 8501
 
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
+RUN mkdir imgs
+RUN mkdir db
+
 VOLUME /app/imgs
+VOLUME /app/db
 
 ENTRYPOINT ["sh", "run.sh"]
