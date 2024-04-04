@@ -28,7 +28,10 @@ if 'text' not in st.session_state:
     st.session_state.text = ''
 
 if 'creds' not in st.session_state:
-    st.session_state.creds = {}
+    st.session_state.creds = {
+        'telegram_username': '',
+        'email': ''
+    }
 
 if uploaded_file is not None:
     st.image(uploaded_file, caption='Загруженное изображение', use_column_width=True)
@@ -43,6 +46,11 @@ if uploaded_file is not None:
         \n- ***table*** — для распознавания таблиц на русском и английском языках.''')
 
     if st.button('Распознать'):
+        st.session_state.text = ''
+        st.session_state.creds = {
+            'telegram_username': '',
+            'email': ''
+        }
         utilities.clean_temp_dir()
         API_KEY = os.getenv('YANDEX_API_KEY')
 

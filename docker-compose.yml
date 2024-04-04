@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  web:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    volumes:
+      - './imgs:/app/imgs'
+      - './db:/app'
+    ports:
+      - '8501:8501'
+  bot:
+    build:
+      dockerfile: ./Dockerfile1
+      context: ./
+    volumes:
+      - './imgs:/app/imgs'
+      - './db:/app'
+    command: python bot.py
+
+volumes:
+  config:
+    driver: local
+  images:
+    driver: local

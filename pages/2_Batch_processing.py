@@ -22,8 +22,10 @@ st.title('Распознавание нескольких файлов')
 local = os.getcwd() + '\\imgs'
 st.markdown(f'Сканирование директории `{local}` на наличие файлов для распознавания')
 
-if st.button('Просканировать директорию'):
-    utilities.image_grid()
+if st.button('Предпросмотр изображений'):
+    imgs = utilities.image_grid()
+    if len(imgs) == 0:
+        st.warning('В папке отсутствуют изображения')
 
 col1, col2 = st.columns(2)
 with col1:
@@ -38,6 +40,7 @@ if st.button('Распознать'):
     imgs = utilities.image_grid()
     API_KEY = os.getenv('YANDEX_API_KEY')
     with st.spinner('Выполнение...'):
+        st.session_state.res = {}
         for img in imgs:
             f = open(img, 'rb')
             encoded_string = base64.b64encode(f.read())

@@ -9,10 +9,10 @@ import utilities
 
 dotenv_path = 'cfg/.env'
 success = load_dotenv(dotenv_path)
+res = {}
 
 
 async def check():
-    res = {}
     image_files, manuscripts = utilities.load_images('imgs/*.jpg')
 
     view_images = []
@@ -25,19 +25,23 @@ async def check():
         encoded_string = base64.b64encode(f.read())
         img1 = str(encoded_string)[2:-1]
         f.close()
-        ocr_response = utilities.do_ocr_request(img1, 'handwritten', API_KEY)
-        recognized_text = utilities.parse_ocr_response(ocr_response)
-        text = recognized_text[0]
-        creds = recognized_text[1]
-        res[img] = [text, creds['telegram_username']]
+        try:
+            if img not in res.keys():
+                ocr_response = utilities.do_ocr_request(img1, 'handwritten', API_KEY)
+                recognized_text = utilities.parse_ocr_response(ocr_response)
+                text = recognized_text[0]
+                creds = recognized_text[1]
+                res[img] = [text, creds['telegram_username']]
 
-        if recognized_text[1]['telegram_username'] is None:
+                if recognized_text[1]['telegram_username'] is None:
+                    pass
+                elif telegram_integration.get_user_id(creds['telegram_username']) is None:
+                    pass
+                else:
+                    os.remove(img)
+                    await telegram_integration.send_message(creds['telegram_username'], text)
+        except Exception:
             pass
-        elif telegram_integration.get_user_id(creds['telegram_username']) is None:
-            pass
-        else:
-            os.remove(img)
-            await telegram_integration.send_message(creds['telegram_username'], text)
 
 
 async def periodic():
@@ -59,4 +63,6 @@ task = loop.create_task(periodic())
 try:
     loop.run_until_complete(task)
 except asyncio.CancelledError:
+    pass
+except AttributeError:
     pass
