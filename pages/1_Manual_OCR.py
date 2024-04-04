@@ -17,6 +17,8 @@ st.sidebar.success('Выберите страницу')
 st.title('Распознавание текста на фотографии')
 
 uploaded_file = st.file_uploader(label='Выберите файл на устройстве для распознавания текста', type=['jpg', 'png'])
+
+# Save uploaded file to a temporary directory
 try:
     with open('temp/' + uploaded_file.name, 'wb') as f:
         f.write(uploaded_file.getbuffer())
@@ -24,6 +26,7 @@ try:
 except AttributeError:
     pass
 
+# Initialize session state variables for recognized text and credentials
 if 'text' not in st.session_state:
     st.session_state.text = ''
 
@@ -33,9 +36,11 @@ if 'creds' not in st.session_state:
         'email': ''
     }
 
+# --- Process uploaded file ---
 if uploaded_file is not None:
     st.image(uploaded_file, caption='Загруженное изображение', use_column_width=True)
 
+    # --- OCR model selection and description ---
     col1, col2 = st.columns(2)
     with col1:
         selected_model = st.radio('Модель', models, index=2)
@@ -45,6 +50,7 @@ if uploaded_file is not None:
         \n- ***handwritten*** — для распознавания произвольного сочетания печатного и рукописного текста на русском и английском языках.
         \n- ***table*** — для распознавания таблиц на русском и английском языках.''')
 
+    # Recognize text on button click
     if st.button('Распознать'):
         st.session_state.text = ''
         st.session_state.creds = {
@@ -52,17 +58,24 @@ if uploaded_file is not None:
             'email': ''
         }
         utilities.clean_temp_dir()
-        API_KEY = os.getenv('YANDEX_API_KEY')
 
+        # Get API key and encode image data
+        API_KEY = os.getenv('YANDEX_API_KEY')
         encoded_string = base64.b64encode(uploaded_file.getvalue())
         img = str(encoded_string)[2:-1]
+
+        # Make OCR request and parse response
         ocr_response = utilities.do_ocr_request(img, selected_model, API_KEY)
         recognized_text = utilities.parse_ocr_response(ocr_response)
+
+        # Store recognized text and credentials in session state
         st.session_state.text = recognized_text[0]
         st.session_state.creds = recognized_text[1]
 
         st.subheader('Результат распознавания:')
         st.write(recognized_text[0])
+
+        # Check for Telegram username and send message
         if recognized_text[1]['telegram_username'] is None:
             st.toast('На изображении не найден телеграм', icon='😢')
         elif telegram_integration.get_user_id(st.session_state.creds['telegram_username']) is None:
@@ -73,6 +86,7 @@ if uploaded_file is not None:
             asyncio.run(telegram_integration.send_message(st.session_state.creds['telegram_username'],
                                                           st.session_state.text))
 
+    # --- Send results section ---
     st.subheader('Отправка результата')
     telegram_tab, zulip_tab = st.tabs(['Telegram', 'Zulip'])
     with telegram_tab:
@@ -97,7 +111,7 @@ if uploaded_file is not None:
         attach_img = st.toggle(label='Приложить загруженное изображение', value=True, key=3)
         if st.button('Отправить', key=33, on_click=utilities.clean_temp_dir):
             try:
-                zulip_id = int(zulip_username)
+                zulip_id = int(zulip_username)  # Try parsing as user ID
                 try:
                     if attach_img:
                         zulip_response = zulip_integration.send_message(id=zulip_id, topic=zulip_topic,
@@ -106,11 +120,13 @@ if uploaded_file is not None:
                     else:
                         zulip_response = zulip_integration.send_message(id=zulip_id, topic=zulip_topic,
                                                                         message=st.session_state.text)
+
+                        # Check for Zulip API success
                         if zulip_response.get('result') != 'success':
                             st.error(f"Ошибка отправки сообщения!\n{zulip_response.get('msg')}", icon='🚨')
                 except Exception as e:
                     st.error(f'Ошибка выполнения!\n{e}', icon='🚨')
-            except ValueError:
+            except ValueError:  # If not a user ID, assume stream name
                 try:
                     if attach_img:
                         zulip_response = zulip_integration.send_message(id=zulip_username, topic=zulip_topic,
@@ -119,7 +135,9 @@ if uploaded_file is not None:
                     else:
                         zulip_response = zulip_integration.send_message(id=zulip_username, topic=zulip_topic,
                                                                         message=st.session_state.text)
-                    if zulip_response.get('result') != 'success':
-                        st.error(f"Ошибка отправки сообщения!\n{zulip_response.get('msg')}", icon='🚨')
+
+                        # Check for Zulip API success
+                        if zulip_response.get('result') != 'success':
+                            st.error(f"Ошибка отправки сообщения!\n{zulip_response.get('msg')}", icon='🚨')
                 except Exception as e:
                     st.error(f'Ошибка выполнения!\n{e}', icon='🚨')

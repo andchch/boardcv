@@ -12,6 +12,17 @@ email_regex = r'^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$'
 
 
 def do_ocr_request(content, model, key):
+    """
+    Performs an OCR request to the Yandex Cloud OCR API.
+
+    Parameters:
+        content (str): The base64-encoded image content.
+        model (str): The OCR model to use (e.g., 'page', 'handwritten').
+        key (str): The Yandex Cloud API key.
+
+    Returns:
+        dict | None: A dictionary containing the JSON response from the API if successful, otherwise None.
+    """
     payload = {
         'mimeType': 'JPEG',
         'languageCodes': ['en', 'ru'],
@@ -38,6 +49,17 @@ def do_ocr_request(content, model, key):
 
 
 def parse_ocr_response(response_json):
+    """
+    Parses the JSON response from the Yandex Cloud OCR API.
+
+    Parameters:
+        response_json (dict): The JSON response from the API.
+
+    Returns:
+        tuple: A tuple containing:
+            * str: The extracted text from the image.
+            * dict: A dictionary containing extracted credentials (telegram_username, email).
+    """
     credentials = {
         'telegram_username': None,
         'email': None
@@ -75,6 +97,12 @@ def parse_ocr_response(response_json):
 
 
 def clean_temp_dir(temp_dir='temp'):
+    """
+    Cleans the specified temporary directory by deleting all files and subdirectories.
+
+    Parameters:
+        temp_dir (str, optional): The path to the temporary directory. Defaults to 'temp'.
+    """
     for filename in os.listdir(temp_dir):
         file_path = os.path.join(temp_dir, filename)
         try:
@@ -87,6 +115,17 @@ def clean_temp_dir(temp_dir='temp'):
 
 
 def load_images(path):
+    """
+    Loads image files from a given path and extracts manuscript names.
+
+    Parameters:
+        path (str): The glob pattern to match image files (e.g., 'imgs/*.jpg').
+
+    Returns:
+        tuple: A tuple containing:
+            * list: A list of image file paths.
+            * list: A sorted list of unique manuscript names extracted from the file paths.
+    """
     image_files = glob.glob(path)
     manuscripts = []
     for image_file in image_files:
@@ -100,6 +139,15 @@ def load_images(path):
 
 
 def image_grid(path='imgs/*.jpg'):
+    """
+    Displays a grid of images in Streamlit and returns the list of displayed image paths.
+
+    Parameters:
+        path (str, optional): The glob pattern to match image files (e.g., 'imgs/*.jpg'). Defaults to 'imgs/*.jpg'.
+
+    Returns:
+        list: A list of image file paths that were displayed in the grid.
+    """
     image_files, manuscripts = load_images(path)
     n = 2
 

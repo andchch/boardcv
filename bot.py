@@ -5,14 +5,21 @@ from dotenv import load_dotenv
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import filters, ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler
 
+# Configure logging
 logging.basicConfig(
     filename='bot.log',
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO)
 
 
-def db_init():
-    connection = sqlite3.connect(os.getenv('DATABASE_PATH', default='users.db'))
+def db_init() -> sqlite3.Connection:
+    """
+    Initializes the database connection.
+
+    Returns:
+        sqlite3.Connection: A connection object to the SQLite database.
+    """
+    connection = sqlite3.connect(os.getenv('DATABASE_PATH', default='db/users.db'))
     cursor = connection.cursor()
 
     cursor.execute('''
@@ -26,7 +33,13 @@ def db_init():
     return connection
 
 
-def db_add_user(update: Update):
+def db_add_user(update: Update) -> None:
+    """
+    Adds or updates a user in the database.
+
+    Parameters:
+        update (telegram.Update): The Telegram update object containing user information.
+    """
     db = db_init()
     user_id = update.effective_user.id
     username = update.effective_user.username
@@ -44,7 +57,13 @@ def db_add_user(update: Update):
     db.close()
 
 
-def db_delete_user(update: Update):
+def db_delete_user(update: Update) -> None:
+    """
+    Deletes a user from the database.
+
+    Parameters:
+        update (telegram.Update): The Telegram update object containing user information.
+    """
     db = db_init()
     user_id = update.effective_user.id
     username = update.effective_user.username
@@ -62,8 +81,10 @@ def db_delete_user(update: Update):
     db.close()
 
 
+# Handler for the /start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     db_add_user(update)
+    # Create keyboard with options
     keyboard = [
         [
             '/update',
@@ -77,18 +98,21 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('Выберите действие:', reply_markup=reply_markup)
 
 
+# Handler for the /update command (updates user information)
 async def user_update(update: Update, context: ContextTypes.DEFAULT_TYPE):
     db_add_user(update)
     await context.bot.send_message(chat_id=update.effective_chat.id,
                                    text='Ваша запись обновлена.')
 
 
+# Handler for the /delete command (deletes user information)
 async def delete(update: Update, context: ContextTypes.DEFAULT_TYPE):
     db_delete_user(update)
     await context.bot.send_message(chat_id=update.effective_chat.id,
                                    text='Ваша запись удалена.')
 
 
+# Handler for unknown commands
 async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id,
                                    text='Команда не распознана.')
@@ -102,8 +126,10 @@ if __name__ == '__main__':
     else:
         logging.warning('No .env file found')
 
+    # Create the Telegram bot application
     application = ApplicationBuilder().token(os.getenv('TELEGRAM_BOT_TOKEN')).build()
 
+    # Add command handlers
     start_handler = CommandHandler('start', start)
     application.add_handler(start_handler)
 
@@ -116,4 +142,5 @@ if __name__ == '__main__':
     unknown_handler = MessageHandler(filters.COMMAND, unknown)
     application.add_handler(unknown_handler)
 
+    # Start the bot in polling mode
     application.run_polling()
