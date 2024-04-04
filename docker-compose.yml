@@ -7,7 +7,7 @@ services:
       context: ./
     volumes:
       - './imgs:/app/imgs'
-      - './db:/app'
+      - './db:/app/db'
     ports:
       - '8501:8501'
   bot:
@@ -16,8 +16,7 @@ services:
       context: ./
     volumes:
       - './imgs:/app/imgs'
-      - './db:/app'
-    command: python bot.py
+      - './db:/app/db'
 
 volumes:
   config:
