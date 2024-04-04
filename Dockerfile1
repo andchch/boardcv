@@ -1,0 +1,19 @@
+# Берем нужный базовый образ
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Копируем все файлы из текущей директории в /app контейнера
+COPY . .
+
+# Устанавливаем все зависимости
+RUN pip install -r requirements.txt --no-cache-dir
+
+RUN mkdir imgs
+RUN mkdir db
+
+
+VOLUME /app/imgs
+VOLUME /app/db
+
+ENTRYPOINT ["python", "bot.py"]
