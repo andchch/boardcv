@@ -14,11 +14,8 @@ RUN echo "[general]" >> /root/.streamlit/credentials.toml
 RUN echo "email = \"\"" >>/root/.streamlit/credentials.toml
 
 RUN mkdir temp
-RUN mkdir imgs
-RUN mkdir db
-
 
 VOLUME /app/imgs
 VOLUME /app/db
 
-ENTRYPOINT ["python", "bot.py"]
+ENTRYPOINT ["python", "bg.py"]

@@ -19,10 +19,13 @@ EXPOSE 8501
 
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
-RUN mkdir imgs
-RUN mkdir db
-
 VOLUME /app/imgs
 VOLUME /app/db
 
-ENTRYPOINT ["sh", "run.sh"]
+RUN mkdir temp
+RUN mkdir /root/.streamlit
+RUN echo "[general]" >> /root/.streamlit/credentials.toml
+RUN echo "email = \"\"" >>/root/.streamlit/credentials.toml
+
+# ["bash", "run.sh"]
+ENTRYPOINT ["streamlit", "run", "Start.py", "--server.port=8501", "--server.address=0.0.0.0"]
