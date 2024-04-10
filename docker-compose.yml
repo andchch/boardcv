@@ -3,14 +3,15 @@ version: '3'
 services:
   bot:
     build:
-      dockerfile: ./Dockerfile1
+      dockerfile: Dockerfile_reg_bot
       context: ./
     volumes:
       - './imgs:/app/imgs'
       - './db:/app/db'
+
   web:
     build:
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile_web
       context: ./
     volumes:
       - './imgs:/app/imgs'
@@ -19,9 +20,10 @@ services:
       - '8501:8501'
     depends_on:
       - bot
-  backgroud:
+
+  background:
     build:
-      dockerfile: ./Dockerfile2
+      dockerfile: Dockerfile_background_service
       context: ./
     volumes:
       - './imgs:/app/imgs'

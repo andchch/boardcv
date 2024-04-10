@@ -4,21 +4,17 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Копируем все файлы из текущей директории в /app контейнера
-COPY . .
+COPY background_service/* cfg *.py ./
+
+RUN mkdir temp && \
+    mkdir /root/.streamlit && \
+    echo "[general]" >> /root/.streamlit/credentials.toml && \
+    echo "email = \"\"" >>/root/.streamlit/credentials.toml
 
 # Устанавливаем все зависимости
 RUN pip install -r requirements.txt --no-cache-dir
 
-RUN mkdir /root/.streamlit
-RUN echo "[general]" >> /root/.streamlit/credentials.toml
-RUN echo "email = \"\"" >>/root/.streamlit/credentials.toml
-
-RUN mkdir temp
-RUN mkdir imgs
-RUN mkdir db
-
-
 VOLUME /app/imgs
 VOLUME /app/db
 
-ENTRYPOINT ["python", "bot.py"]
+ENTRYPOINT ["python", "bg.py"]
