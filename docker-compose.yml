@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  bot:
+    build:
+      dockerfile: ./Dockerfile1
+      context: ./
+    volumes:
+      - './imgs:/app/imgs'
+      - './db:/app/db'
+  web:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    volumes:
+      - './imgs:/app/imgs'
+      - './db:/app/db'
+    ports:
+      - '8501:8501'
+    depends_on:
+      - bot
+  backgroud:
+    build:
+      dockerfile: ./Dockerfile2
+      context: ./
+    volumes:
+      - './imgs:/app/imgs'
+      - './db:/app/db'
+    depends_on:
+      - bot
+      - web

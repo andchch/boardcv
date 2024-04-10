@@ -8,6 +8,10 @@ st.write('''Этот сервис предоставляет возможнос�
             Полученные данные можно отправить на почту, в Telegram или Zulip, 
             а также скачать в формате текстового файла.''')
 
+st.markdown('''- [Документация пользователя](https://wiki.miem.tv/doc/dokumentaciya-polzovatelya-pxh24njMFZ)
+- [Документация разработчика](https://git.miem.hse.ru/aimartinich/boardcv)
+''')
+
 dotenv_path = 'cfg/.env'
 success = load_dotenv(dotenv_path)
 if not success:
