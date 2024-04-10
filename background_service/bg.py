@@ -9,7 +9,7 @@ import utilities
 
 
 # Load environment variables from .env file
-dotenv_path = 'cfg/.env'
+dotenv_path = '../cfg/.env'
 success = load_dotenv(dotenv_path)
 res = {}
 

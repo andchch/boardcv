@@ -119,7 +119,7 @@ async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 if __name__ == '__main__':
-    dotenv_path = 'cfg/.env'
+    dotenv_path = '../cfg/.env'
     if os.path.exists(dotenv_path):
         load_dotenv(dotenv_path)
         logging.info('.env loaded successfully.')
