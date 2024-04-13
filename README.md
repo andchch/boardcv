@@ -1,92 +1,110 @@
-# BoardCV
+# Проект распознавания текста на изображении №27
 
-test
+Этот проект демонстрирует распознавание текста на фотографии доски и интегрируется с Telegram и Zulip для отправки извлеченной информации.
 
-## Getting started
+## Спецификация
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### Функционал
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- **Распознавание текста на изображениях:** Извлекает текст из изображений с использованием различных моделей OCR (страница, многоколоночная страница, рукописный текст, таблицы).
+- **Интеграция с Telegram:**
+  - Отправляет распознанный текст указанным пользователям Telegram.
+  - Позволяет прикреплять исходное изображение.
+  - Хранит информацию о пользователях в локальной базе данных для упрощения взаимодействия.
+- **Интеграция с Zulip:**
+  - Отправляет распознанный текст указанным пользователям или потокам Zulip.
+  - Позволяет указывать тему для сообщений в потоках.
+  - Позволяет прикреплять исходное изображение.
+- **Пакетная обработка:** Распознает текст из нескольких изображений в директории.
+- **Периодическое сканирование:** Автоматически сканирует директорию на наличие новых изображений и обрабатывает их.
 
-## Add your files
+**В разработке:**
+- Распознавание таблиц с загруженного фото.
+- Отправка извлеченной информации на почту.
+- Возможность гибкой и удобной настройки приложения.
+- Интеграция с языковой моделью.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### Целевая аудитория:
+- Преподаватели и лекторы, которые хотят делиться своими презентациями, лекциями и семинарами с аудиторией, коллегами или студентами других учебных заведений.
+- Ученики и студенты, которые хотят сохранить информацию с доски в электронном виде, чтобы повторить материал, подготовиться к экзаменам или выполнить домашнее задание.
+- Участники конференций, симпозиумов или воркшопов, которые хотят получить доступ к материалам, представленным на доске, или обсудить их с другими участниками.
 
-```
-cd existing_repo
-git remote add origin https://git.miem.hse.ru/aimartinich/boardcv.git
-git branch -M master
-git push -uf origin master
-```
+### Какие юзкейсы могут быть у нашего сервиса?
 
-## Integrate with your tools
+- ***Учебная среда:***
+Вы можете мгновенно получать и распространять лекционные или семинарские материалы с доски, не тратя время на записи и копирование.
+- ***Конференции:***
+Вы можете без труда запоминать и делиться ключевыми моментами выступлений, которые были представлены на доске. Просто сфотографируйте доску, и наше приложение преобразует все важные данные для анализа или обмена со слушателями.
+- ***Деловые Встречи:***
+Вы можете легко фиксировать и организовывать идеи, которые были вынесены на доску во время совещания. Сфотографируйте доску, и наше приложение создаст текстовый документ с этими идеями для последующего обсуждения.
 
-- [ ] [Set up project integrations](https://git.miem.hse.ru/aimartinich/boardcv/-/settings/integrations)
 
-## Collaborate with your team
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+## Технические характеристики
+### Технические требования:
+- Python 3.10+
+- Docker и Docker Compose
 
-## Test and Deploy
+### Требования к данным:
+- Размер изображения не должен превышать 20 мегапикселей (длина × ширина).
+- Формат файла .jpg, .png .jpeg и .pdf.
+- Размер файла не должен превышать 20МБ.
+- На водящих изображениях текст должен быть хорошо виден.
 
-Use the built-in continuous integration in GitLab.
+### Метрики качества:
+- Точность распознавания результатов составяет 0.9412244558 (94%)
+- Пользователь получил сообщение с извлеченно информацией на почту/в Telegram/Zulip.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+## Требования для MVP
+- Веб-интерфейс.
+- Загрузка изображения для последующего его анализа.
+- Извлечение текстовой(рукописной и печатной) информации с загруженного фото.  
+- Отправка извлеченной информации в Telegram.
+- Отправка извлеченной информации в Zulip.
+- Автоматическое распознавание адреса электронной почты и ника в Telegram на загруженном фото для дальнейшей отправки.
+- Анализ сразу нескольких файлов одновременно.
+- Возможность автоматического сканирования директории с изображениями с указанной периодичностью.
 
-***
+## Требования для MUP
+- Оптимизация использования API, занимаемой памяти и скорости сборки.
+- Требования для MVP.
+- Удобный веб-интерфейс с возможностью гибкой настройки приложения.  
+- Отправка извлеченной информации на почту.
+- Распознаваие таблиц.
+- Интеграция с языковой моделью.
 
-# Editing this README
+## Содержание репозитория
+**Приложения:**
+- `Start.py`, `pages/1_Manual_OCR.py`, `pages/2_Batch_processing`: Файлы основного приложения с веб-интерфейсом Streamlit.
+- `bot.py`: Телеграм-бот для регистрации и управления пользователями.
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+**Модули:**
+- `zulip_integration.py`: Функции для взаимодействия с API Zulip.
+- `utilities.py`: Общие утилиты для обработки изображений, OCR и управления временными файлами.
+- `telegram_integration.py`: Функции для взаимодействия с API Telegram Bot.
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+**Дополнительные файлы:**
+- `run.sh`: Скрипт для запуска основного приложения.
+- `requirements.txt`: Список необходимых библиотек Python.
+- `docker-compose.yml`: Конфигурация Docker Compose для сборки и запуска сервиса.
+- `README.md`: Общая документация по проекту.
+- `Dockerfile`, `Dockerfile1`: Докерфайлы для сборки образов отдельных приложений.
+- `.gitignore`, `.dockerignore`: Файлы для исключения из системы контроля версий и сборок Docker.
+- `.env`: Шаблон файла окружения с необходимыми переменными конфигурации.
 
-## Name
-Choose a self-explaining name for your project.
+## Настройка
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+1. **Переменные окружения:** Заполните файл `.env` в директории `cfg` со следующими переменными:
+    - `YC_OCR_ENDPOINT`: URL Yandex Cloud OCR API. См. [документацию Yandex Vision OCR](https://yandex.cloud/ru/docs/vision/ocr/api-ref/)
+    - `YANDEX_API_KEY`: Ваш ключ API Yandex Cloud. См. [документацию Yandex Cloud](https://yandex.cloud/ru/docs/iam/concepts/authorization/api-key)
+    - `TELEGRAM_BOT_TOKEN`: Ваш токен Telegram бота. См. [инструкция по получению Токена для Телеграм бота](https://www.cossa.ru/instahero/321374/)
+    - `DATABASE_PATH`: Путь к файлу базы данных SQLite (необязательно, по умолчанию `db/users.db`).
+    - `SCAN_PERIOD`: Временной интервал в секундах для периодического сканирования.
+2. **Настройка Zulip:** Получите файл `zuliprc` и поместите его в директорию `cfg` с конфигурацией вашего бота Zulip. См. [документацию Zulip API](https://zulip.com/api/configuring-python-bindings#download-a-zuliprc-file) для получения подробной информации.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## Запуск приложения
+1. Скопируйте репозиторий:\
+`git clone https://git.miem.hse.ru/aimartinich/boardcv`
+2. Произведите [настройку](#Настройка).
+3. Выполните команду `docker compose up -d` для запуска приложения.
+4. Перейдите адресу `http://localhost:8501` в браузере для открытия интерфейса.

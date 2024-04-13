@@ -1,11 +1,21 @@
 import os
 import sqlite3
 import telegram
+from dotenv import load_dotenv
 from telegram.error import BadRequest
 
+dotenv_path = 'cfg/.env'
+load_dotenv(dotenv_path)
 
-def db_init():
-    connection = sqlite3.connect(os.getenv('DATABASE_PATH', default='users.db'))
+
+def db_init() -> sqlite3.Connection:
+    """
+    Initializes the database connection.
+
+    Returns:
+        sqlite3.Connection: A connection object to the SQLite database.
+    """
+    connection = sqlite3.connect(os.getenv('DATABASE_PATH', default='db/users.db'))
     cursor = connection.cursor()
 
     cursor.execute('''
@@ -20,6 +30,16 @@ def db_init():
 
 
 async def check_usernames():
+    """
+    Checks and updates usernames in the database to ensure they are current.
+
+    This function iterates through all users in the database and retrieves their
+    current usernames from Telegram. If the stored username doesn't match the actual
+    username, it updates the database with the correct username.
+
+    Prints a message indicating whether any usernames were updated or if all
+    usernames were already correct.
+    """
     bot = telegram.Bot(os.getenv('TELEGRAM_BOT_TOKEN'))
 
     fixed = False
@@ -46,6 +66,15 @@ async def check_usernames():
 
 
 def get_user_id(username: str) -> int | None:
+    """
+    Retrieves the user ID associated with a given username.
+
+    Parameters:
+        username (str): The username to search for.
+
+    Returns:
+        int | None: The user ID if found, otherwise None.
+    """
     db = db_init()
     cursor = db.cursor()
     cursor.execute('SELECT user_id, username FROM Users WHERE username = ?', (username,))
@@ -57,11 +86,19 @@ def get_user_id(username: str) -> int | None:
         return users[0][0]
 
 
-async def send_message(username: str, message: str):
+async def send_message(username: str, message: str, img=None):
+    """
+    Sends a message to a user with an optional image attachment.
+
+    Parameters:
+        username (str): The username of the recipient.
+        message (str): The message text to send.
+        img (str | None, optional): The path to the image file to attach. Defaults to None.
+    """
     bot = telegram.Bot(os.getenv('TELEGRAM_BOT_TOKEN'))
     chat_id = get_user_id(username)
-    await bot.send_message(chat_id=chat_id, text=message)
-
-if __name__ == '__main__':
-    a = get_user_id('andchcf')
-    print(a)
+    if img is not None:
+        await bot.send_document(chat_id=chat_id, document=img)
+        await bot.send_message(chat_id=chat_id, text=message)
+    else:
+        await bot.send_message(chat_id=chat_id, text=message)

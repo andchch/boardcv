@@ -1,0 +1,18 @@
+# игнорировать директории .git и .cache
+.git
+.cache
+.gitignore
+.dockerignore
+
+# игнорировать все файлы, которые имеют разрешение class *.class во всех директориях, включая корневой каталог сборки
+**/*.class
+
+# игнорировать все файлы в формате markdown (md) кроме всех файлов README*.md, исключая README-secret.md
+*.md
+!README*.md
+README-secret.md
+
+temp
+imgs
+db
+.venv

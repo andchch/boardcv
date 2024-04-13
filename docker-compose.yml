@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  bot:
+    build:
+      dockerfile: Dockerfile_reg_bot
+      context: ./
+    volumes:
+      - './imgs:/app/imgs'
+      - './db:/app/db'
+
+  web:
+    build:
+      dockerfile: Dockerfile_web
+      context: ./
+    volumes:
+      - './imgs:/app/imgs'
+      - './db:/app/db'
+    ports:
+      - '8501:8501'
+    depends_on:
+      - bot
+
+  background:
+    build:
+      dockerfile: Dockerfile_background_service
+      context: ./
+    volumes:
+      - './imgs:/app/imgs'
+      - './db:/app/db'
+    depends_on:
+      - bot
+      - web
