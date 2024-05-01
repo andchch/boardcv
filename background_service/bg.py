@@ -1,8 +1,10 @@
 import asyncio
 import base64
 import os
+import sys
 
 from dotenv import load_dotenv
+sys.path.append('/app')
 
 import telegram_integration
 import utilities
@@ -10,7 +12,7 @@ import utilities
 
 # Load environment variables from .env file
 dotenv_path = '../cfg/.env'
-success = load_dotenv(dotenv_path)
+load_dotenv(dotenv_path)
 res = {}
 
 

@@ -4,15 +4,15 @@ FROM python:3.11-alpine
 WORKDIR /app
 
 # Копируем все файлы из текущей директории в /app контейнера
-COPY reg_bot/* cfg *.py ./
+COPY . .
 
 # Устанавливаем все зависимости и создаем конфигурационные файлы
 RUN mkdir /root/.streamlit && \
     echo "[general]" >> /root/.streamlit/credentials.toml && \
     echo "email = \"\"" >>/root/.streamlit/credentials.toml && \
-    pip install -r requirements.txt --no-cache-dir
+    pip install -r reg_bot/requirements.txt --no-cache-dir
 
 VOLUME /app/imgs
 VOLUME /app/db
 
-ENTRYPOINT ["python", "bot.py"]
+ENTRYPOINT ["python", "reg_bot/bot.py"]

@@ -19,7 +19,7 @@ st.sidebar.success('Выберите страницу')
 
 st.title('Распознавание нескольких файлов')
 
-if os.path.exists('imgs'):
+if not os.path.exists('imgs'):
     os.mkdir('imgs')
 
 # Set the directory for scanning images
