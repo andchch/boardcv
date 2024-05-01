@@ -76,7 +76,8 @@
 ## Содержание репозитория
 **Приложения:**
 - `Start.py`, `pages/1_Manual_OCR.py`, `pages/2_Batch_processing`: Файлы основного приложения с веб-интерфейсом Streamlit.
-- `bot.py`: Телеграм-бот для регистрации и управления пользователями.
+- `reg_bot/bot.py`: Телеграм-бот для регистрации и управления пользователями.
+- `background_service/bg.py`
 
 **Модули:**
 - `zulip_integration.py`: Функции для взаимодействия с API Zulip.
@@ -84,11 +85,10 @@
 - `telegram_integration.py`: Функции для взаимодействия с API Telegram Bot.
 
 **Дополнительные файлы:**
-- `run.sh`: Скрипт для запуска основного приложения.
-- `requirements.txt`: Список необходимых библиотек Python.
+- `requirements.txt`, `reg_bot/requirements.txt`, `background_service/requirements.txt`: Список необходимых зависимостей для соответствующих сервисов.
 - `docker-compose.yml`: Конфигурация Docker Compose для сборки и запуска сервиса.
 - `README.md`: Общая документация по проекту.
-- `Dockerfile`, `Dockerfile1`: Докерфайлы для сборки образов отдельных приложений.
+- `Dockerfile_web`, `Dockerfile_reg_bot`, `Dockerfile_background_service`: Докерфайлы для сборки образов отдельных сервисов.
 - `.gitignore`, `.dockerignore`: Файлы для исключения из системы контроля версий и сборок Docker.
 - `.env`: Шаблон файла окружения с необходимыми переменными конфигурации.
 
@@ -98,9 +98,8 @@
     - `YC_OCR_ENDPOINT`: URL Yandex Cloud OCR API. См. [документацию Yandex Vision OCR](https://yandex.cloud/ru/docs/vision/ocr/api-ref/)
     - `YANDEX_API_KEY`: Ваш ключ API Yandex Cloud. См. [документацию Yandex Cloud](https://yandex.cloud/ru/docs/iam/concepts/authorization/api-key)
     - `TELEGRAM_BOT_TOKEN`: Ваш токен Telegram бота. См. [инструкция по получению Токена для Телеграм бота](https://www.cossa.ru/instahero/321374/)
-    - `DATABASE_PATH`: Путь к файлу базы данных SQLite (необязательно, по умолчанию `db/users.db`).
     - `SCAN_PERIOD`: Временной интервал в секундах для периодического сканирования.
-2. **Настройка Zulip:** Получите файл `zuliprc` и поместите его в директорию `cfg` с конфигурацией вашего бота Zulip. См. [документацию Zulip API](https://zulip.com/api/configuring-python-bindings#download-a-zuliprc-file) для получения подробной информации.
+2. **Настройка Zulip:** Получите файл `zuliprc` с конфигурацией вашего бота Zulip и поместите его в директорию `cfg`. См. [документацию Zulip API](https://zulip.com/api/configuring-python-bindings#download-a-zuliprc-file) для получения подробной информации.
 
 ## Запуск приложения
 1. Скопируйте репозиторий:\
@@ -108,3 +107,4 @@
 2. Произведите [настройку](#Настройка).
 3. Выполните команду `docker compose up -d` для запуска приложения.
 4. Перейдите адресу `http://localhost:8501` в браузере для открытия интерфейса.
+5. Для остановки приложения выполните команду `docker compose down` находясь в директории с приложением.
