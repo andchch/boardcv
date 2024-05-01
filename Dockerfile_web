@@ -10,13 +10,11 @@ COPY --exclude=background_service --exclude=reg_bot . ./
 VOLUME /app/imgs
 VOLUME /app/db
 
-RUN mkdir temp && \
-    mkdir /root/.streamlit && \
+# Устанавливаем все зависимости и создаем конфигурационные файлы
+RUN mkdir /root/.streamlit && \
     echo "[general]" >> /root/.streamlit/credentials.toml && \
-    echo "email = \"\"" >>/root/.streamlit/credentials.toml
-
-# Устанавливаем все зависимости
-RUN pip install -r requirements.txt --no-cache-dir
+    echo "email = \"\"" >>/root/.streamlit/credentials.toml && \
+    pip install -r requirements.txt --no-cache-dir
 
 EXPOSE 8501
 

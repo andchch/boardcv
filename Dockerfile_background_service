@@ -6,13 +6,11 @@ WORKDIR /app
 # Копируем все файлы из текущей директории в /app контейнера
 COPY background_service/* cfg *.py ./
 
-RUN mkdir temp && \
-    mkdir /root/.streamlit && \
+# Устанавливаем все зависимости и создаем конфигурационные файлы
+RUN mkdir /root/.streamlit && \
     echo "[general]" >> /root/.streamlit/credentials.toml && \
-    echo "email = \"\"" >>/root/.streamlit/credentials.toml
-
-# Устанавливаем все зависимости
-RUN pip install -r requirements.txt --no-cache-dir
+    echo "email = \"\"" >>/root/.streamlit/credentials.toml && \
+    pip install -r requirements.txt --no-cache-dir
 
 VOLUME /app/imgs
 VOLUME /app/db

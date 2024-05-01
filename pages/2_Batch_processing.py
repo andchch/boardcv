@@ -19,6 +19,9 @@ st.sidebar.success('Выберите страницу')
 
 st.title('Распознавание нескольких файлов')
 
+if os.path.exists('imgs'):
+    os.mkdir('imgs')
+
 # Set the directory for scanning images
 local = os.getcwd() + '\\imgs'
 st.markdown(f'Сканирование директории `{local}` на наличие файлов для распознавания')

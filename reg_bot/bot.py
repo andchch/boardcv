@@ -19,7 +19,9 @@ def db_init() -> sqlite3.Connection:
     Returns:
         sqlite3.Connection: A connection object to the SQLite database.
     """
-    connection = sqlite3.connect(os.getenv('DATABASE_PATH', default='db/users.db'))
+    if not os.path.exists('db'):
+        os.mkdir('db')
+    connection = sqlite3.connect('db/users.db')
     cursor = connection.cursor()
 
     cursor.execute('''

@@ -20,6 +20,8 @@ uploaded_file = st.file_uploader(label='Выберите файл на устр�
 
 # Save uploaded file to a temporary directory
 try:
+    if not os.path.exists('temp'):
+        os.mkdir('temp')
     with open('temp/' + uploaded_file.name, 'wb') as f:
         f.write(uploaded_file.getbuffer())
         filepath = 'temp/' + uploaded_file.name

@@ -15,6 +15,8 @@ res = {}
 
 
 async def check():
+    if not os.path.exists('imgs'):
+        os.mkdir('imgs')
     # Load images and filter for specific manuscripts
     image_files, manuscripts = utilities.load_images('imgs/*.jpg')
 
