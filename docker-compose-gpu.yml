@@ -48,7 +48,7 @@ services:
       test: ollama --version || exit 1
     command: serve
     volumes:
-      - ollama:/root/.ollama
+      - ./ollama:/root/.ollama
 
 volumes:
   ollama:
