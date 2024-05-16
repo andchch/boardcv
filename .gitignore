@@ -2,6 +2,7 @@
 .vscode
 db
 imgs
+ollama
 
 cfg/zuliprc
 ### VirtualEnv template
