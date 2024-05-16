@@ -3,6 +3,7 @@
 db
 imgs
 ollama
+pred
 
 cfg/zuliprc
 ### VirtualEnv template

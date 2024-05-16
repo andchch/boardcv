@@ -1,0 +1,9 @@
+torch
+torchvision
+opencv-python
+Pillow
+Augmentor
+editdistance
+matplotlib
+tqdm==4.62.3
+PyYAML==6.0

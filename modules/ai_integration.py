@@ -1,6 +1,8 @@
 import requests
 
-
+#TODO: Use LangChain
+#TODO: Write GPU start documentation and nvidia container toolkit installation
+#      nvidia: https://github.com/ollama/ollama/blob/main/docs/docker.md#nvidia-gpu
 def ollama_check():
     models = requests.get('http://localhost:11434/api/tags').json()
     return models
