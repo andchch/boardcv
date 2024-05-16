@@ -4,9 +4,9 @@ import asyncio
 import streamlit as st
 from telegram.error import BadRequest, InvalidToken
 import urllib3
-import utilities
-import telegram_integration
-import zulip_integration
+import modules.utilities as utilities
+import modules.telegram_integration as telegram_integration
+import modules.zulip_integration as zulip_integration
 
 urllib3.disable_warnings()
 

@@ -6,8 +6,8 @@ import sys
 from dotenv import load_dotenv
 sys.path.append('/app')
 
-import telegram_integration
-import utilities
+import modules.telegram_integration as telegram_integration
+import modules.utilities as utilities
 
 
 # Load environment variables from .env file

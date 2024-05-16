@@ -4,11 +4,11 @@ import os
 
 from telegram.error import BadRequest, InvalidToken
 
-import telegram_integration
-import utilities
+import modules.telegram_integration as telegram_integration
+import modules.utilities as utilities
 import streamlit as st
 
-import zulip_integration
+import modules.zulip_integration as zulip_integration
 
 models = ['page', 'page-column-sort', 'handwritten', 'table']
 
