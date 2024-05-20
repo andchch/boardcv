@@ -8,7 +8,8 @@ import modules.utilities as utilities
 import modules.telegram_integration as telegram_integration
 import modules.zulip_integration as zulip_integration
 import modules.ai_integration as ai_integration
-import modules.local_ocr as local_ocr
+if os.getenv('USE_LOCAL') == 'True':
+    import modules.local_ocr as local_ocr
 
 urllib3.disable_warnings()
 
