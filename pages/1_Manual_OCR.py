@@ -8,6 +8,7 @@ import modules.utilities as utilities
 import modules.telegram_integration as telegram_integration
 import modules.zulip_integration as zulip_integration
 import modules.ai_integration as ai_integration
+import modules.local_ocr as local_ocr
 
 urllib3.disable_warnings()
 
@@ -68,8 +69,11 @@ if uploaded_file is not None:
         img = str(encoded_string)[2:-1]
 
         # Make OCR request and parse response
-        ocr_response = utilities.do_ocr_request(img, selected_model, API_KEY)
-        recognized_text = utilities.parse_ocr_response(ocr_response)
+        if os.getenv('USE_LOCAL') == 'True':
+            recognized_text = local_ocr.recognize_text(uploaded_file.name)
+        else:
+            ocr_response = utilities.do_ocr_request(img, selected_model, API_KEY)
+            recognized_text = utilities.parse_ocr_response(ocr_response)
 
         # Store recognized text and credentials in session state
         st.session_state.text = recognized_text[0]

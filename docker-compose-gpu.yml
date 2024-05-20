@@ -11,7 +11,7 @@ services:
 
   web:
     build:
-      dockerfile: Dockerfile_web
+      dockerfile: Dockerfile_web_gpu
       context: ./
     volumes:
       - './imgs:/app/imgs'

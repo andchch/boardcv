@@ -4,7 +4,7 @@ import modules.ai_integration as ai_integration
 
 
 st.title('На этой странице вы можете настроить работу локальной LLM')
-if os.getenv('USE_LOCAL'):
+if os.getenv('USE_LOCAL') == 'True':
     models = ai_integration.ollama_check()
     if len(models['models']) != 0:
         st.info('Модель уже загружена')

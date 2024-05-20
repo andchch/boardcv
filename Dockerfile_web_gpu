@@ -1,0 +1,23 @@
+# syntax=docker/dockerfile:1.7-labs
+# Берем нужный базовый образ
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Копируем все файлы из текущей директории в /app контейнера
+COPY --exclude=background_service --exclude=reg_bot . ./
+
+VOLUME /app/imgs
+VOLUME /app/db
+
+# Устанавливаем все зависимости и создаем конфигурационные файлы
+RUN mkdir /root/.streamlit && \
+    echo "[general]" >> /root/.streamlit/credentials.toml && \
+    echo "email = \"\"" >>/root/.streamlit/credentials.toml && \
+    pip install -r requirements.txt --no-cache-dir && \
+    pip install shiftlab_ocr --no-cache-dir
+
+EXPOSE 8501
+
+# ["bash", "run.sh"]
+ENTRYPOINT ["streamlit", "run", "Start.py", "--server.port=8501", "--server.address=0.0.0.0"]
