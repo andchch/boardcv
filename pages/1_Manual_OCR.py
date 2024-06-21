@@ -19,6 +19,8 @@ st.sidebar.success('Выберите страницу')
 
 st.title('Распознавание текста на фотографии')
 
+local = st.toggle('Использовать локально')
+
 uploaded_file = st.file_uploader(label='Выберите файл на устройстве для распознавания текста', type=['jpg', 'png'])
 
 # Save uploaded file to a temporary directory
@@ -70,7 +72,7 @@ if uploaded_file is not None:
         img = str(encoded_string)[2:-1]
 
         # Make OCR request and parse response
-        if os.getenv('USE_LOCAL') == 'True':
+        if local == 'True':
             recognized_text = local_ocr.recognize_text(uploaded_file.name)
         else:
             ocr_response = utilities.do_ocr_request(img, selected_model, API_KEY)
