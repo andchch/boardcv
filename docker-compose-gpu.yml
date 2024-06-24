@@ -11,7 +11,7 @@ services:
 
   web:
     build:
-      dockerfile: Dockerfile_web
+      dockerfile: Dockerfile_web_gpu
       context: ./
     volumes:
       - './imgs:/app/imgs'
@@ -33,6 +33,14 @@ services:
       - web
 
   ollama:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities:
+                - gpu
     image: ollama/ollama
     ports:
       - '11434:11434'
@@ -40,7 +48,7 @@ services:
       test: ollama --version || exit 1
     command: serve
     volumes:
-      - ollama:/root/.ollama
+      - ./ollama:/root/.ollama
 
 volumes:
   ollama:

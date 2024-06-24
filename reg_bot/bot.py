@@ -19,7 +19,9 @@ def db_init() -> sqlite3.Connection:
     Returns:
         sqlite3.Connection: A connection object to the SQLite database.
     """
-    connection = sqlite3.connect(os.getenv('DATABASE_PATH', default='db/users.db'))
+    if not os.path.exists('db'):
+        os.mkdir('db')
+    connection = sqlite3.connect('db/users.db')
     cursor = connection.cursor()
 
     cursor.execute('''
@@ -119,7 +121,7 @@ async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 if __name__ == '__main__':
-    dotenv_path = 'cfg/.env'
+    dotenv_path = '/app/cfg/.env'
     if os.path.exists(dotenv_path):
         load_dotenv(dotenv_path)
         logging.info('.env loaded successfully.')
