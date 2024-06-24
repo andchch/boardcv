@@ -4,11 +4,11 @@ import os
 
 from telegram.error import BadRequest, InvalidToken
 
-import telegram_integration
-import utilities
+import modules.telegram_integration as telegram_integration
+import modules.utilities as utilities
 import streamlit as st
 
-import zulip_integration
+import modules.zulip_integration as zulip_integration
 
 models = ['page', 'page-column-sort', 'handwritten', 'table']
 
@@ -18,6 +18,9 @@ if 'res' not in st.session_state:
 st.sidebar.success('Выберите страницу')
 
 st.title('Распознавание нескольких файлов')
+
+if not os.path.exists('imgs'):
+    os.mkdir('imgs')
 
 # Set the directory for scanning images
 local = os.getcwd() + '\\imgs'

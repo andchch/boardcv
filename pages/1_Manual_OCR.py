@@ -4,9 +4,12 @@ import asyncio
 import streamlit as st
 from telegram.error import BadRequest, InvalidToken
 import urllib3
-import utilities
-import telegram_integration
-import zulip_integration
+import modules.utilities as utilities
+import modules.telegram_integration as telegram_integration
+import modules.zulip_integration as zulip_integration
+import modules.ai_integration as ai_integration
+if os.getenv('USE_LOCAL') == 'True':
+    import modules.local_ocr as local_ocr
 
 urllib3.disable_warnings()
 
@@ -16,10 +19,14 @@ st.sidebar.success('Выберите страницу')
 
 st.title('Распознавание текста на фотографии')
 
+local = st.toggle('Использовать локально')
+
 uploaded_file = st.file_uploader(label='Выберите файл на устройстве для распознавания текста', type=['jpg', 'png'])
 
 # Save uploaded file to a temporary directory
 try:
+    if not os.path.exists('temp'):
+        os.mkdir('temp')
     with open('temp/' + uploaded_file.name, 'wb') as f:
         f.write(uploaded_file.getbuffer())
         filepath = 'temp/' + uploaded_file.name
@@ -65,8 +72,11 @@ if uploaded_file is not None:
         img = str(encoded_string)[2:-1]
 
         # Make OCR request and parse response
-        ocr_response = utilities.do_ocr_request(img, selected_model, API_KEY)
-        recognized_text = utilities.parse_ocr_response(ocr_response)
+        if local == 'True':
+            recognized_text = local_ocr.recognize_text(uploaded_file.name)
+        else:
+            ocr_response = utilities.do_ocr_request(img, selected_model, API_KEY)
+            recognized_text = utilities.parse_ocr_response(ocr_response)
 
         # Store recognized text and credentials in session state
         st.session_state.text = recognized_text[0]
@@ -86,6 +96,8 @@ if uploaded_file is not None:
             asyncio.run(telegram_integration.send_message(st.session_state.creds['telegram_username'],
                                                           st.session_state.text))
 
+    gpt_context = st.text_input(label='Введите контекст для GPT. Оставьте пустым если не хотите использовать',
+                                help='Нейросеть будет использовать этот контекст при обработке распознанного текста')
     # --- Send results section ---
     st.subheader('Отправка результата')
     telegram_tab, zulip_tab = st.tabs(['Telegram', 'Zulip'])
@@ -97,8 +109,14 @@ if uploaded_file is not None:
             try:
                 if attach_img:
                     asyncio.run(telegram_integration.send_message(tg_username, st.session_state.text, filepath))
+                    if gpt_context != '':
+                        gpt_response = ai_integration.ask_gpt(st.session_state.text, gpt_context)
+                        asyncio.run(telegram_integration.send_message(tg_username, gpt_response))
                 else:
                     asyncio.run(telegram_integration.send_message(tg_username, st.session_state.text))
+                    if gpt_context != '':
+                        gpt_response = ai_integration.ask_gpt(st.session_state.text, gpt_context)
+                        asyncio.run(telegram_integration.send_message(tg_username, gpt_response))
             except BadRequest:
                 st.error(f'Ошибка выполнения!\nПользователь не найден', icon='🚨')
             except InvalidToken:
@@ -117,9 +135,19 @@ if uploaded_file is not None:
                         zulip_response = zulip_integration.send_message(id=zulip_id, topic=zulip_topic,
                                                                         message=st.session_state.text,
                                                                         attachment=filepath)
+                        if gpt_context != '':
+                            gpt_response = ai_integration.ask_gpt(st.session_state.text, gpt_context)
+                            zulip_integration.send_message(id=zulip_id, topic=zulip_topic,
+                                                           message=gpt_response)
                     else:
                         zulip_response = zulip_integration.send_message(id=zulip_id, topic=zulip_topic,
                                                                         message=st.session_state.text)
+                        if gpt_context != '':
+                            print(gpt_context)
+                            gpt_response = ai_integration.ask_gpt(st.session_state.text, gpt_context)
+                            print(gpt_response)
+                            zulip_integration.send_message(id=zulip_id, topic=zulip_topic,
+                                                           message=gpt_response)
 
                         # Check for Zulip API success
                         if zulip_response.get('result') != 'success':
@@ -132,9 +160,17 @@ if uploaded_file is not None:
                         zulip_response = zulip_integration.send_message(id=zulip_username, topic=zulip_topic,
                                                                         message=st.session_state.text,
                                                                         attachment=filepath)
+                        if gpt_context != '':
+                            gpt_response = ai_integration.ask_gpt(st.session_state.text, gpt_context)
+                            zulip_integration.send_message(id=zulip_id, topic=zulip_topic,
+                                                           message=gpt_response)
                     else:
                         zulip_response = zulip_integration.send_message(id=zulip_username, topic=zulip_topic,
                                                                         message=st.session_state.text)
+                        if gpt_context != '':
+                            gpt_response = ai_integration.ask_gpt(st.session_state.text, gpt_context)
+                            zulip_integration.send_message(id=zulip_id, topic=zulip_topic,
+                                                           message=gpt_response)
 
                         # Check for Zulip API success
                         if zulip_response.get('result') != 'success':

@@ -1,20 +1,24 @@
 import asyncio
 import base64
 import os
+import sys
 
 from dotenv import load_dotenv
+sys.path.append('/app')
 
-import telegram_integration
-import utilities
+import modules.telegram_integration as telegram_integration
+import modules.utilities as utilities
 
 
 # Load environment variables from .env file
 dotenv_path = '../cfg/.env'
-success = load_dotenv(dotenv_path)
+load_dotenv(dotenv_path)
 res = {}
 
 
 async def check():
+    if not os.path.exists('imgs'):
+        os.mkdir('imgs')
     # Load images and filter for specific manuscripts
     image_files, manuscripts = utilities.load_images('imgs/*.jpg')
 

@@ -1,3 +1,11 @@
+.idea
+.vscode
+db
+imgs
+ollama
+pred
+
+cfg/zuliprc
 ### VirtualEnv template
 # Virtualenv
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/

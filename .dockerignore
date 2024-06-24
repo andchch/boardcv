@@ -16,3 +16,6 @@ temp
 imgs
 db
 .venv
+.vscode
+.idea
+__pycache__
